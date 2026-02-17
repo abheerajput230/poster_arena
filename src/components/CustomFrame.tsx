@@ -546,7 +546,7 @@ export default function FramePreview() {
 
       {/* MAIN */}
       <div className="flex max-w-full xs:flex-col  mx-auto">
-        <div className="w-1/2 xs:w-full sticky xs:relative xs:top-4 top-0 xs:max-h-[430px] h-screen flex xs:flex-col justify-center items-center gap-8 xs:gap-4 p-8">
+        <div className="w-1/2 xs:w-full sticky xs:relative xs:top-4 top-0 xs:max-h-[660px] h-screen flex xs:flex-col justify-center items-center gap-8 xs:gap-4 p-8">
           <div className="flex flex-col items-center gap-4">
             <div
               className="p-[14px] shadow-2xl transition-all duration-300"
