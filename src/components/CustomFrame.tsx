@@ -106,6 +106,7 @@ export default function FramePreview() {
  
   const [selectedImage1, setSelectedImage1] = useState(imageCategories.Sports[0]);
   const [frameColor1, setFrameColor1] = useState("#000000");
+  const [imageSource, setImageSource] = useState<"category" | "custom">("category");
 
   // Shared states
   const [bgColor, setBgColor] = useState("#e5e7eb");
@@ -114,6 +115,10 @@ export default function FramePreview() {
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof imageCategories>("Sports");
   const [customImageUrl, setCustomImageUrl] = useState("");
   const [customImageError, setCustomImageError] = useState("");
+  const currentPrice = imageSource === "category" ? 199 : 249;
+  const [isDmOpen, setIsDmOpen] = useState(false);
+  const [dmImage, setDmImage] = useState("");
+  const [actionError, setActionError] = useState("");
 
 
   // FRAME OPTIONS WITH NAMES
@@ -167,6 +172,7 @@ export default function FramePreview() {
         throw new Error("Invalid protocol");
       }
       setCurrentImage(url);
+      setImageSource("custom");
       setCustomImageError("");
     } catch {
       setCustomImageError("Enter a valid http(s) image URL.");
@@ -186,6 +192,7 @@ export default function FramePreview() {
     reader.onload = () => {
       if (typeof reader.result === "string") {
         setCurrentImage(reader.result);
+        setImageSource("custom");
         setCustomImageError("");
       }
     };
@@ -196,6 +203,118 @@ export default function FramePreview() {
 
     e.target.value = "";
   };
+
+  const loadImage = (src: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Image load failed"));
+      img.src = src;
+    });
+
+  const drawFittedImage = (
+    ctx: CanvasRenderingContext2D,
+    image: HTMLImageElement,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => {
+    const imageRatio = image.width / image.height;
+    const frameRatio = width / height;
+
+    if (fitMode === "fill") {
+      ctx.drawImage(image, x, y, width, height);
+      return;
+    }
+
+    if (fitMode === "cover") {
+      let drawWidth = width;
+      let drawHeight = height;
+      let drawX = x;
+      let drawY = y;
+
+      if (imageRatio > frameRatio) {
+        drawHeight = height;
+        drawWidth = height * imageRatio;
+        drawX = x - (drawWidth - width) / 2;
+      } else {
+        drawWidth = width;
+        drawHeight = width / imageRatio;
+        drawY = y - (drawHeight - height) / 2;
+      }
+
+      ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+      return;
+    }
+
+    const containRatio = Math.min(width / image.width, height / image.height);
+    const containWidth = image.width * containRatio;
+    const containHeight = image.height * containRatio;
+    const containX = x + (width - containWidth) / 2;
+    const containY = y + (height - containHeight) / 2;
+    ctx.drawImage(image, containX, containY, containWidth, containHeight);
+  };
+
+  const renderFrameCanvas = async () => {
+    const frameWidth = 210;
+    const frameHeight = 297;
+    const border = 14;
+
+    const outputSize = 420;
+    const canvas = document.createElement("canvas");
+    canvas.width = outputSize;
+    canvas.height = outputSize;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas is not available");
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, outputSize, outputSize);
+
+    const img = await loadImage(selectedImage1);
+    const rad = (rotation1 * Math.PI) / 180;
+
+    ctx.save();
+    ctx.translate(outputSize / 2, outputSize / 2);
+    ctx.rotate(rad);
+
+    ctx.fillStyle = frameColor1;
+    ctx.fillRect(-frameWidth / 2, -frameHeight / 2, frameWidth, frameHeight);
+
+    const innerX = -frameWidth / 2 + border;
+    const innerY = -frameHeight / 2 + border;
+    const innerWidth = frameWidth - border * 2;
+    const innerHeight = frameHeight - border * 2;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(innerX, innerY, innerWidth, innerHeight);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(innerX, innerY, innerWidth, innerHeight);
+    ctx.clip();
+    drawFittedImage(ctx, img, innerX, innerY, innerWidth, innerHeight);
+    ctx.restore();
+    ctx.restore();
+
+    return canvas;
+  };
+
+  const handleDownloadFrame = async () => {
+    setActionError("");
+    try {
+      const canvas = await renderFrameCanvas();
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "custom-frame.png";
+      link.click();
+    } catch {
+      setActionError("Download failed. Try with an uploaded image.");
+    }
+  };
+
+  const handleOrderNow = () => { window.open("https://www.instagram.com/poster_arena/", "_blank"); }; const handleDmClick = () => { window.open("https://www.instagram.com/poster_arena/", "_blank"); };
 
 
   return (
@@ -333,6 +452,11 @@ export default function FramePreview() {
                     <p className="text-sm text-red-600 mt-2">{customImageError}</p>
                   )}
                 </div>
+                <img
+                src={selectedImage1}
+                alt="Selected by user"
+                className="h-20 w-14 rounded-md border border-purple-300 object-cover"
+              />
 
                 {/* IMAGE GALLERY */}
                
@@ -463,6 +587,35 @@ export default function FramePreview() {
                 {rotation1}°
               </div>
             </div>
+            <div className="w-[290px] rounded-xl border border-gray-300 bg-white p-3 text-center">
+              <p className="text-sm text-gray-700">Price</p>
+              <p className="text-2xl font-bold text-black">Rs {currentPrice}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                {imageSource === "category"
+                  ? "Category image selected"
+                  : "Uploaded/custom image selected"}
+              </p>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+               
+                <button
+                  type="button"
+                  className="rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-3 py-2 text-xs font-semibold text-white hover:opacity-90 transition"
+                  onClick={handleDownloadFrame}
+                >
+                  Download
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-800 hover:bg-gray-50 transition"
+                  onClick={handleDmClick}
+                >
+                  DM
+                </button>
+              </div>
+              {actionError && (
+                <p className="mt-2 text-xs text-red-600">{actionError}</p>
+              )}
+            </div>
           </div>
 
 
@@ -499,11 +652,16 @@ export default function FramePreview() {
             {selectedCategory} Collection
           </h3>
 
+         
+
           <div className="grid grid-cols-5 gap-4">
             {imageCategories[selectedCategory].map((img, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedImage1(img)}
+                onClick={() => {
+                  setSelectedImage1(img);
+                  setImageSource("category");
+                }}
                 className={`
                   w-full aspect-[1/1.414] object-cover cursor-pointer border-4 rounded transition hover:scale-105
                   ${selectedImage1 === img
@@ -525,8 +683,61 @@ export default function FramePreview() {
 
       </div>
 
+      {isDmOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-50 bg-black/50"
+            onClick={() => setIsDmOpen(false)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="w-full max-w-md rounded-2xl bg-white shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://i.pravatar.cc/100?img=12"
+                    alt="Dummy profile"
+                    className="h-10 w-10 rounded-full"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Poster Praise Support</p>
+                    <p className="text-xs text-green-600">Online</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="rounded-md px-2 py-1 text-sm text-gray-600 hover:bg-gray-100"
+                  onClick={() => setIsDmOpen(false)}
+                >
+                  Close
+                </button>
+              </div>
+
+              <div className="space-y-3 bg-gray-50 px-4 py-4">
+                <p className="max-w-[85%] rounded-xl bg-white px-3 py-2 text-sm text-gray-700 shadow">
+                  Hi, I want to order this frame.
+                </p>
+                <div className="ml-auto w-fit max-w-[85%] rounded-xl bg-blue-600 px-2 py-2 shadow">
+                  <img
+                    src={dmImage || selectedImage1}
+                    alt="Frame sent in DM"
+                    className="h-48 w-36 rounded-md border border-blue-300 object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
     </div>
 
   );
 
 }
+
+
+
+
