@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 
 // CATEGORIZED IMAGES
 const imageCategories = {
@@ -173,6 +173,30 @@ export default function FramePreview() {
     }
   };
 
+  const applyUploadedImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setCustomImageError("Please upload a valid image file.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setCurrentImage(reader.result);
+        setCustomImageError("");
+      }
+    };
+    reader.onerror = () => {
+      setCustomImageError("Could not read the uploaded image.");
+    };
+    reader.readAsDataURL(file);
+
+    e.target.value = "";
+  };
+
 
   return (
 
@@ -266,11 +290,11 @@ export default function FramePreview() {
 
                 {/* CUSTOM IMAGE URL */}
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center  xs:flex-col gap-2 mb-4">
                     <div className="w-1 h-6 bg-gradient-to-b from-purple-600 to-blue-600 rounded-full"></div>
-                    <h3 className="font-bold text-lg text-gray-800">Use Your Image Link</h3>
+                    <h3 className="font-bold text-lg  text-gray-800">Use Image URL or Upload</h3>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex xs:flex-col text-gray-800 gap-3">
                     <input
                       type="url"
                       value={customImageUrl}
@@ -288,6 +312,22 @@ export default function FramePreview() {
                     >
                       Apply to Frame
                     </button>
+                  </div>
+                  <div className="mt-3 flex xs:flex-col items-center gap-3">
+                    <span className="text-sm text-gray-500">or</span>
+                    <label
+                      htmlFor="custom-image-upload"
+                      className="px-5 py-3 rounded-xl font-semibold bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200 transition-all duration-200 cursor-pointer"
+                    >
+                      Upload Image
+                    </label>
+                    <input
+                      id="custom-image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={applyUploadedImage}
+                      className="hidden"
+                    />
                   </div>
                   {customImageError && (
                     <p className="text-sm text-red-600 mt-2">{customImageError}</p>
