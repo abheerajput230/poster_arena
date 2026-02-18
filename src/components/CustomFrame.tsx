@@ -258,11 +258,11 @@ export default function FramePreview() {
   };
 
   const renderFrameCanvas = async () => {
-    const frameWidth = 210;
-    const frameHeight = 297;
-    const border = 14;
+    const frameWidth = 630;
+    const frameHeight = 891;
+    const border = 42;
 
-    const outputSize = 420;
+    const outputSize = 1260;
     const canvas = document.createElement("canvas");
     canvas.width = outputSize;
     canvas.height = outputSize;
@@ -306,8 +306,8 @@ export default function FramePreview() {
     try {
       const canvas = await renderFrameCanvas();
       const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = "custom-frame.png";
+      link.href = canvas.toDataURL("image/jpeg", 1.0);
+      link.download = "custom-frame.jpg";
       link.click();
     } catch {
       setActionError("Download failed. Try with an uploaded image.");

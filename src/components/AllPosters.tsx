@@ -28,16 +28,51 @@ const posterImages = [
 
 ];
 
-const WALL_WIDTH = 1000;
-const WALL_HEIGHT = 700;
+const BASE_WALL_WIDTH = 1000;
+const BASE_WALL_HEIGHT = 700;
 
-const POSTER_WIDTH = 100;
-const POSTER_HEIGHT = 120;
+const BASE_POSTER_WIDTH = 100;
+const BASE_POSTER_HEIGHT = 120;
 const GAP = 6;
 
 export default function PosterWallPreview() {
 
   const [wall, setWall] = useState([]);
+  const [scale, setScale] = useState(1);
+
+  const WALL_WIDTH = BASE_WALL_WIDTH * scale;
+  const WALL_HEIGHT = BASE_WALL_HEIGHT * scale;
+
+  const POSTER_WIDTH = BASE_POSTER_WIDTH * scale;
+  const POSTER_HEIGHT = BASE_POSTER_HEIGHT * scale;
+  const SCALED_GAP = GAP * scale;
+
+
+  // detect screen size and scale
+  useEffect(() => {
+
+    function updateScale() {
+
+      const screenWidth = window.innerWidth;
+
+      if (screenWidth < 480) {
+        setScale(screenWidth / 1100); // xs screen
+      } else if (screenWidth < 768) {
+        setScale(screenWidth / 1200); // small screen
+      } else {
+        setScale(1); // desktop
+      }
+
+    }
+
+    updateScale();
+
+    window.addEventListener("resize", updateScale);
+
+    return () => window.removeEventListener("resize", updateScale);
+
+  }, []);
+
 
   function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
@@ -45,17 +80,18 @@ export default function PosterWallPreview() {
 
   function generatePattern() {
 
-    const rows = Math.floor(Math.random() * 2) + 4; // 4–5 rows
+    const rows = Math.floor(Math.random() * 2) + 4;
 
     const pattern = [];
 
     for (let i = 0; i < rows; i++) {
-      pattern.push(Math.floor(Math.random() * 3) + 3); // 3–5 posters per row
+      pattern.push(Math.floor(Math.random() * 3) + 3);
     }
 
     return pattern;
 
   }
+
 
   function generateWall() {
 
@@ -71,7 +107,7 @@ export default function PosterWallPreview() {
 
     const totalHeight =
       pattern.length * POSTER_HEIGHT +
-      (pattern.length - 1) * GAP;
+      (pattern.length - 1) * SCALED_GAP;
 
     let startY = (WALL_HEIGHT - totalHeight) / 2;
 
@@ -79,7 +115,7 @@ export default function PosterWallPreview() {
 
       const rowWidth =
         count * POSTER_WIDTH +
-        (count - 1) * GAP;
+        (count - 1) * SCALED_GAP;
 
       const startX =
         (WALL_WIDTH - rowWidth) / 2;
@@ -90,7 +126,7 @@ export default function PosterWallPreview() {
 
           image: images[imageIndex++],
 
-          x: startX + i * (POSTER_WIDTH + GAP),
+          x: startX + i * (POSTER_WIDTH + SCALED_GAP),
 
           y: startY,
 
@@ -98,7 +134,7 @@ export default function PosterWallPreview() {
 
       }
 
-      startY += POSTER_HEIGHT + GAP;
+      startY += POSTER_HEIGHT + SCALED_GAP;
 
     });
 
@@ -106,26 +142,30 @@ export default function PosterWallPreview() {
 
   }
 
+
   useEffect(() => {
     generateWall();
-  }, []);
+  }, [scale]);
+
 
   return (
 
-    <div className="min-h-screen  bg-gray-300 flex flex-col items-center p-8">
+    <div className="min-h-screen bg-gray-300 flex flex-col items-center p-4 xs:p-2">
 
       <button
         onClick={generateWall}
-        className="mb-6 px-6 py-3 bg-black text-white rounded-lg"
+        className="mb-4 px-4 py-2 bg-black text-white rounded-lg xs:text-sm"
       >
         Refresh Layout
       </button>
+
 
       <div
         className="relative bg-white shadow-2xl rounded-xl"
         style={{
           width: WALL_WIDTH,
           height: WALL_HEIGHT,
+          maxWidth: "95vw",
         }}
       >
 
@@ -154,5 +194,7 @@ export default function PosterWallPreview() {
       </div>
 
     </div>
+
   );
+
 }
