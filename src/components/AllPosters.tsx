@@ -150,68 +150,69 @@ export default function PosterWallPreview() {
 
     if (userImages.length === 0) return;
 
-    const pattern = generatePattern();
+    const imageCount = userImages.length;
+    
+    // Shuffle images for different layout each time
+    const shuffledImages = shuffle([...userImages]);
+    
+    // Calculate max images that can fit (with proper spacing)
+    const maxCols = Math.floor((WALL_WIDTH - SCALED_GAP) / (POSTER_WIDTH + SCALED_GAP));
+    const maxRows = Math.floor((WALL_HEIGHT - SCALED_GAP) / (POSTER_HEIGHT + SCALED_GAP));
+    const maxImages = maxCols * maxRows;
+    
+    // Limit images to what fits on wall
+    const imagesToUse = Math.min(imageCount, maxImages);
+    
+    // Random row distribution
+    const minRows = Math.max(2, Math.ceil(imagesToUse / maxCols));
+    const maxRowsNeeded = Math.min(maxRows, Math.ceil(imagesToUse / 3));
+    const rowsNeeded = Math.floor(Math.random() * (maxRowsNeeded - minRows + 1)) + minRows;
 
-    const total = pattern.reduce((a, b) => a + b, 0);
-
-    // If uploaded images are fewer than needed, repeat shuffled images.
-    const images = [];
-    while (images.length < total) {
-      images.push(...shuffle(userImages));
+    // Create random pattern
+    const pattern = [];
+    let remaining = imagesToUse;
+    for (let i = 0; i < rowsNeeded && remaining > 0; i++) {
+      const maxColsForRow = Math.min(maxCols, remaining, Math.ceil(remaining / (rowsNeeded - i)));
+      const minColsForRow = Math.max(1, Math.floor(remaining / (rowsNeeded - i + 1)));
+      const cols = Math.floor(Math.random() * (maxColsForRow - minColsForRow + 1)) + minColsForRow;
+      pattern.push(cols);
+      remaining -= cols;
     }
-    images.length = total;
 
+    // Use shuffled images
     let imageIndex = 0;
-
     const positions = [];
-
-    const totalHeight =
-      pattern.length * POSTER_HEIGHT +
-      (pattern.length - 1) * SCALED_GAP;
-
+    const totalHeight = pattern.length * POSTER_HEIGHT + (pattern.length - 1) * SCALED_GAP;
     let startY = (WALL_HEIGHT - totalHeight) / 2;
 
     pattern.forEach((count) => {
-
-      const rowWidth =
-        count * POSTER_WIDTH +
-        (count - 1) * SCALED_GAP;
-
-      const startX =
-        (WALL_WIDTH - rowWidth) / 2;
+      const rowWidth = count * POSTER_WIDTH + (count - 1) * SCALED_GAP;
+      const startX = (WALL_WIDTH - rowWidth) / 2;
 
       for (let i = 0; i < count; i++) {
-
-        if (!images[imageIndex]) break;
+        if (imageIndex >= imagesToUse) break;
 
         positions.push({
-
-          image: images[imageIndex++],
-
+          image: shuffledImages[imageIndex++],
           x: startX + i * (POSTER_WIDTH + SCALED_GAP),
-
           y: startY,
-
         });
-
       }
 
       startY += POSTER_HEIGHT + SCALED_GAP;
-
     });
 
     setWall(positions);
-
   }
 
 
   useEffect(() => {
 
-    if (userImages.length > 0) {
+    if (userImages.length > 0 && wall.length === 0) {
       generateWall();
     }
 
-  }, [scale, userImages]);
+  }, [userImages]);
 
 
   // download wall
@@ -344,7 +345,6 @@ export default function PosterWallPreview() {
     height: POSTER_HEIGHT,
     left: poster.x,
     top: poster.y,
-    transform: "translate(-50%, -50%)",
   }}
 >
 

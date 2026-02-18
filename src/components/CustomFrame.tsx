@@ -85,16 +85,59 @@ const imageCategories = {
     "https://i.pinimg.com/1200x/f6/2d/76/f62d769668b5b437748a9ba0cfcb973c.jpg",
     "https://i.pinimg.com/736x/f0/b1/34/f0b1347feb4b4413a948c5e60b751c61.jpg",
     "https://i.pinimg.com/736x/b9/5e/08/b95e08551d7f75300abd54c93ee18263.jpg",
+    "https://i.pinimg.com/736x/ff/43/a1/ff43a13864475275e2ba695fba84631a.jpg",
+    "https://i.pinimg.com/736x/3f/cf/c8/3fcfc82c53de668f96cbd900bfed5681.jpg",
+    "https://i.pinimg.com/736x/eb/9f/13/eb9f1306400d736a6be7a6d16633fe8f.jpg",
+    "https://i.pinimg.com/736x/5a/f6/83/5af683999c23e31dbbedf24f8e9874ac.jpg",
+    "https://i.pinimg.com/1200x/23/59/0a/23590a07fa8d2a97d6c5c3d298fde73c.jpg",
+    "https://i.pinimg.com/736x/d7/08/57/d708576bd0eed06eadd823e2ab3278be.jpg",
+    "https://i.pinimg.com/736x/f2/74/1c/f2741c0b5b8119a8061ce15b702ea24c.jpg",
+    "https://i.pinimg.com/736x/6e/98/64/6e9864bc6628b071ff9c2e7e21b93083.jpg",
+    "https://i.pinimg.com/736x/84/16/2a/84162a4f3f39d7f3d66be2f8cbb8d23b.jpg",
+
+
   ],
 
   Anime: [
-    "https://i.pinimg.com/736x/4f/62/d2/4f62d2bc39cb6092fe4dedb978c285c5.jpg",
-    "https://i.pinimg.com/1200x/9a/79/2b/9a792b3a261dc41459858edfd2a46c78.jpg",
-    "https://i.pinimg.com/736x/18/c6/5d/18c65d6bdfda05da46fad385d216d7fb.jpg",
+   
     "https://i.pinimg.com/1200x/6b/5d/de/6b5dde9318c0c88f94464a03da18af2e.jpg",
     "https://i.pinimg.com/736x/e6/6a/6a/e66a6a6ad2417a08d7007f8b5982047f.jpg",
+    "https://i.pinimg.com/1200x/a3/05/ac/a305ac07b881d736e20d73c2bc30ce1a.jpg",
+    "https://i.pinimg.com/736x/33/2d/2e/332d2e8b2d42fd2265e8758831971f21.jpg",
+    "https://i.pinimg.com/1200x/e4/b8/56/e4b856285e753b957e4c859540e756ea.jpg",
+    "https://i.pinimg.com/736x/a2/2e/05/a22e0507c7230c587bf4b93d09f2ade4.jpg",
+    "https://i.pinimg.com/736x/e3/7b/d7/e37bd7d91180c5dc06164db9e3f96351.jpg",
+    "https://i.pinimg.com/1200x/8f/b3/87/8fb38778dcbcca45ce5faebf496ea749.jpg",
+    "https://i.pinimg.com/736x/50/c0/7f/50c07fd4b98af69e737da734bbe72bcf.jpg",
+    "https://i.pinimg.com/736x/78/82/ee/7882eed5145beb875f13269564dae123.jpg",
+
+  
   ],
 
+ Wallpaper: [
+    "https://i.pinimg.com/736x/5e/a2/e4/5ea2e4b5271ccb323fa2a7955577c725.jpg",
+    "https://i.pinimg.com/736x/b2/f9/ab/b2f9ab2648c3039bf91132481e6d683d.jpg",
+    "https://i.pinimg.com/736x/ed/53/60/ed536020749bf50efc81fd81cd920f1c.jpg",
+    "https://i.pinimg.com/736x/d4/cb/7b/d4cb7ba1990278d144cba511524903aa.jpg",
+    "https://i.pinimg.com/736x/59/10/3e/59103e74ad9f0f5a8babf3de65955515.jpg",
+    "https://i.pinimg.com/736x/2e/64/40/2e6440ce11ac1ccc469321346c179406.jpg",
+    "https://i.pinimg.com/736x/c8/f7/9f/c8f79f1bddbb5f10a584c639ef29fb90.jpg",
+    "https://i.pinimg.com/736x/81/47/5b/81475b623c9f6dcca13a27835111d228.jpg",
+    "https://i.pinimg.com/736x/8f/83/b2/8f83b27aca8da179e7eaf4f5fd243d06.jpg",
+    "https://i.pinimg.com/736x/ad/47/55/ad475517a4256b970b71abd6ad1035f8.jpg",
+    "https://i.pinimg.com/736x/7d/07/90/7d0790f4e214ead5d69c74bd69bef10a.jpg",
+    "https://i.pinimg.com/736x/9f/9f/4a/9f9f4aaa49a529d6df540cb1b683cb31.jpg",
+    "https://i.pinimg.com/736x/99/89/9a/99899a73df6b9f0ed7675f0625b875f1.jpg",
+    "https://i.pinimg.com/736x/8e/5a/e4/8e5ae48c600594e0d4f6ed6ff0446dab.jpg",
+    "https://i.pinimg.com/736x/c5/73/3b/c5733b129c19d1601a3d0fbb22665b3d.jpg",
+    "https://i.pinimg.com/736x/a5/c4/ba/a5c4ba95bf3140512c9b0cf70ca4868b.jpg",
+    "https://i.pinimg.com/736x/31/7c/e5/317ce500a3fb74943edccf909a690bd6.jpg",
+    "https://i.pinimg.com/1200x/b9/2f/ee/b92feede3fe4686d110d0c84394ea5fc.jpg",
+      "https://i.pinimg.com/736x/61/2b/4f/612b4f1142278ee6e091c2ab437684ea.jpg",
+    "https://i.pinimg.com/736x/2e/32/1c/2e321c04392f2fad2283bcf24a370c82.jpg",
+    "https://i.pinimg.com/736x/50/f7/4e/50f74e95c7f3a650187e0ccd31a43bfc.jpg",
+    "https://i.pinimg.com/736x/a4/60/30/a460303d287fa52395c727c8176a9162.jpg",
+  ],
  
 
 };
